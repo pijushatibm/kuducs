@@ -24,12 +24,16 @@ namespace dollybal
     {
         public DollyElementContext():base("defaultConnection")
         {
-            Database.CreateIfNotExists();
+            try
+            {
+                Database.CreateIfNotExists();
+            }
+            catch { }
         }
-        public DollyElementContext(string connection = "defaultConnection") : base(connection)
-        {
-            Database.CreateIfNotExists();
-        }
+        //public DollyElementContext(string connection = "defaultConnection") : base(connection)
+        //{
+        //    Database.CreateIfNotExists();
+        //}
         public DbSet<DollySheep> Sheeps { get; set; }
     }
 }
