@@ -7,17 +7,22 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using dollybal;
+using dollybal.Repository;
 
 namespace dolly.Controllers
 {
     public class DollySheepController : Controller
     {
-        private DollyElementContext db = new DollyElementContext();
+        ISheepKeeper db;
+        public DollySheepController(ISheepKeeper keeper)
+        {
+            db = keeper;
+        }
 
         // GET: DollySheep
         public ActionResult Index()
         {
-            return View(db.Sheeps.ToList());
+            return View(db.GetSheeps());
         }
 
         // GET: DollySheep/Details/5
@@ -27,7 +32,7 @@ namespace dolly.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DollySheep dollySheep = db.Sheeps.Find(id);
+            DollySheep dollySheep = db.GetSheep(id);
             if (dollySheep == null)
             {
                 return HttpNotFound();
@@ -50,8 +55,7 @@ namespace dolly.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Sheeps.Add(dollySheep);
-                db.SaveChanges();
+                db.AddSheep(dollySheep);
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +69,7 @@ namespace dolly.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DollySheep dollySheep = db.Sheeps.Find(id);
+            DollySheep dollySheep = db.GetSheep(id);
             if (dollySheep == null)
             {
                 return HttpNotFound();
@@ -82,8 +86,7 @@ namespace dolly.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(dollySheep).State = EntityState.Modified;
-                db.SaveChanges();
+                db.UpdateSheep(dollySheep);
                 return RedirectToAction("Index");
             }
             return View(dollySheep);
@@ -96,7 +99,7 @@ namespace dolly.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DollySheep dollySheep = db.Sheeps.Find(id);
+            DollySheep dollySheep = db.GetSheep(id);
             if (dollySheep == null)
             {
                 return HttpNotFound();
@@ -109,9 +112,8 @@ namespace dolly.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(string id)
         {
-            DollySheep dollySheep = db.Sheeps.Find(id);
-            db.Sheeps.Remove(dollySheep);
-            db.SaveChanges();
+            DollySheep dollySheep = db.GetSheep(id);
+            db.DeleteSheep(dollySheep);
             return RedirectToAction("Index");
         }
 
@@ -119,7 +121,6 @@ namespace dolly.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
             }
             base.Dispose(disposing);
         }
