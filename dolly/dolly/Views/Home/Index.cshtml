@@ -1,0 +1,20 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>AZURE CLASS</h1>
+</div>
+
+<h2>
+    Data Demo <a href="/DollySheep">Go</a>
+    @{ 
+        if(  ViewBag.List != null)
+        {
+            List<dollybal.DollySheep> sheeps = (List<dollybal.DollySheep>)ViewBag.List;
+            <span>
+                @sheeps.Count()
+            </span>
+        }
+    }
+</h2>
